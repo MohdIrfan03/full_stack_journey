@@ -1,0 +1,883 @@
+Here are the notes:
+
+---
+
+## JS Variables & Data Types
+
+### Variables
+
+Variables are containers that hold data which can be reused or updated. Declared using `var`, `let`, or `const`.
+
+| Keyword | Scope | Re-declare | Reassign |
+|---      |---     |---        |---       |
+| `var`   | Function/Global    | ✅ | ✅ |
+| `let`   | Block | ❌ | ✅ |
+| `const` | Block | ❌ | ❌ |
+
+---
+
+### Data Types
+
+#### Primitive (single, immutable values)
+
+| Type | Example | Notes |
+|---|---|---|
+| `Number` | `42`, `3.14` | Integers and decimals |
+| `String` | `"Hello"` | Text in quotes |
+| `Boolean` | `true / false` | Logical value |
+| `Undefined` | `let x;` | Declared but not assigned |
+| `Null` | `let x = null` | Intentional empty value |
+| `Symbol` | `Symbol('id')` | Unique, used as object keys |
+| `BigInt` | `123n` | Integers beyond `Number.MAX_SAFE_INTEGER` |
+
+#### Non-Primitive (reference types)
+
+| Type | Example |
+|---|---|
+| `Object` | `{ name: "Amit", age: 25 }` |
+| `Array` | `["red", "green", "blue"]` |
+| `Function` | `function fun() {}` |
+
+---
+
+### Tricky Expressions to Remember
+
+```js
+null === undefined   // false  → different types
+5 > 3 > 2           // false  → (5>3) = true → 1>2 = false
+[] === []            // false  → different references in memory
+"10" < "9"          // true   → lexicographic (Unicode) comparison
+NaN === NaN         // false  → NaN is never equal to itself, use Number.isNaN()
+true == 1           // true   → type coercion, true becomes 1
+undefined > 0       // false  → undefined becomes NaN
+"5" === 5           // false  → strict check, different types
+[1,2] == [1,2]      // false  → reference comparison, not value
+Infinity > 1000     // true   → Infinity is greater than any finite number
+```
+
+---
+
+### Key Rules
+- Use `===` (strict equality) over `==` to avoid type coercion surprises
+- Arrays and Objects are compared **by reference**, not by value
+- `null` and `undefined` both mean "empty" but are **not** the same type
+- To check for `NaN`, always use `Number.isNaN()`
+
+
+Here are the notes:
+
+---
+
+## JavaScript Data Types (Deep Dive)
+
+Data types define what kind of values a variable can hold and how those values behave — they determine how data is stored in memory and how operations like comparison, calculation, and conversion work.
+
+---
+
+### Primitive Data Types
+Primitive types represent simple, immutable values stored directly in memory.
+
+#### 1. Number
+Covers both integers and floating-point numbers. Special values include `Infinity`, `-Infinity`, and `NaN` (for computational errors).
+```js
+let a = 42;          // integer
+let b = 3.14;        // float
+let c = Infinity;    // special value
+let d = "abc" / 2;   // NaN
+```
+
+#### 2. String
+A series of characters surrounded by quotes. Three types of quotes are supported.
+```js
+let s1 = "Double quotes";
+let s2 = 'Single quotes';
+let s3 = `Template literal — embed: ${s1}`;  // backticks
+```
+
+#### 3. Boolean
+```js
+let t = true;
+let f = false;
+```
+
+#### 4. Null
+`null` does not belong to any default data type — it forms its own separate type. It represents nothing, or an empty value.
+```js
+let age = null;  // intentionally empty
+```
+
+#### 5. Undefined
+A variable that has been declared but not initialized is automatically assigned `undefined`. It means the variable exists but has no value.
+```js
+let a;
+console.log(a);  // undefined
+```
+
+#### 6. Symbol *(ES6)*
+Symbols are unique and immutable primitive values used as identifiers for object properties. They help create unique keys in objects, preventing conflicts.
+```js
+let s1 = Symbol("id");
+let s2 = Symbol("id");
+console.log(s1 == s2);  // false — always unique
+```
+
+#### 7. BigInt *(ES2020)*
+`BigInt` represents whole numbers greater than `2^53` (beyond `Number.MAX_SAFE_INTEGER`).
+```js
+let big = 123456789012345678901234567890n;  // note the 'n' suffix
+```
+
+---
+
+### Non-Primitive Data Types
+Non-primitive types are derived from primitive types, also called reference data types.
+
+#### 1. Object
+Objects are key-value pairs used to store data, created with `{}` or the `new` keyword. Nearly everything in JavaScript is an object.
+```js
+let user = { name: "Ajay", age: 25 };
+console.log(user.name);  // "Ajay"
+```
+
+#### 2. Array
+A special kind of object used to store an ordered collection of values of any data type.
+```js
+let a1 = [1, 2, 3];
+let a2 = [1, "two", { key: "val" }, [3, 4]];  // mixed types allowed
+```
+
+#### 3. Function
+A block of reusable code designed to perform a specific task when called.
+```js
+function greet(name) { return "Hello, " + name; }
+```
+
+#### 4. Date Object
+Used to work with dates and times, allowing for date creation, manipulation, and formatting.
+```js
+let now = new Date();
+console.log(now);
+```
+
+#### 5. RegExp
+An object used to define search patterns for matching text in strings.
+```js
+let pattern = /hello/;
+pattern.test("Hello, world!");  // false — case sensitive
+```
+
+---
+
+### Interesting Facts
+
+**Dynamically Typed** — Variables are not bound to a specific data type. The type is stored with the value (not the variable name) and is decided at runtime.
+```js
+let x = 42;       // number
+x = "hello";      // now a string
+x = [1, 2, 3];    // now an array — all valid!
+```
+
+**Everything behaves like an Object** — Functions are objects, arrays are objects, and even primitives can temporarily behave like objects when you access properties on them (via a temporary wrapper).
+```js
+"hello".length      // 5
+(42).toString()     // "42"
+true.toString()     // "true"
+```
+
+**NaN is type `number`** — `NaN` stands for "Not-a-Number" and represents a computational error. It is technically of type `number`.
+```js
+typeof NaN       // "number"
+NaN === NaN      // false — NaN is never equal to itself
+```
+
+**No `char` type** — There is no separate type for characters. A single character is also a string.
+```js
+typeof "g"    // "string"
+typeof "gfg"  // "string"
+```
+
+**Integers and floats are the same type** — There is only one `number` type that covers both integers and floating-point numbers.
+```js
+typeof 42     // "number"
+typeof 42.5   // "number"
+```
+
+---
+
+### Quick Reference
+
+| Type | Category | Example | `typeof` |
+|---|---|---|---|
+| Number | Primitive | `42`, `3.14`, `NaN` | `"number"` |
+| String | Primitive | `"hello"` | `"string"` |
+| Boolean | Primitive | `true` | `"boolean"` |
+| Null | Primitive | `null` | `"object"` ⚠️ |
+| Undefined | Primitive | `let x;` | `"undefined"` |
+| Symbol | Primitive | `Symbol("id")` | `"symbol"` |
+| BigInt | Primitive | `123n` | `"bigint"` |
+| Object | Non-Primitive | `{}` | `"object"` |
+| Array | Non-Primitive | `[]` | `"object"` |
+| Function | Non-Primitive | `function(){}` | `"function"` |
+
+> ⚠️ `typeof null` returns `"object"` — this is a well-known JS bug that was never fixed for backward compatibility.
+
+Here are the notes:
+
+---
+
+## JavaScript Operators
+
+Operators are symbols or keywords used to perform operations on values and variables. They are the building blocks of JavaScript expressions.
+
+---
+
+### 1. Arithmetic Operators
+Perform mathematical calculations.
+
+| Operator | Operation | Example |
+|---|---|---|
+| `+` | Addition | `5 + 3` → `8` |
+| `-` | Subtraction | `10 - 2` → `8` |
+| `*` | Multiplication | `4 * 2` → `8` |
+| `/` | Division | `8 / 2` → `4` |
+| `%` | Modulus (remainder) | `10 % 3` → `1` |
+| `**` | Exponentiation | `2 ** 3` → `8` |
+
+---
+
+### 2. Assignment Operators
+Used to assign values to variables. Can also perform operations while assigning.
+
+```js
+let n = 10;
+n += 5;   // n = 15  (add and assign)
+n -= 3;   // n = 12  (subtract and assign)
+n *= 2;   // n = 24  (multiply and assign)
+n /= 4;   // n = 6   (divide and assign)
+n %= 4;   // n = 2   (modulus and assign)
+```
+
+---
+
+### 3. Comparison Operators
+Compare two values and return a boolean (`true` or `false`). Useful for making decisions in conditional statements.
+
+```js
+10 > 5         // true  — greater than
+10 < 5         // false — less than
+10 >= 10       // true  — greater than or equal
+10 <= 9        // false — less than or equal
+10 == "10"     // true  — loose equality (type coercion)
+10 === "10"    // false — strict equality (type + value)
+10 !== "10"    // true  — strict inequality
+```
+
+> ⚠️ Always prefer `===` over `==` to avoid unexpected type coercion.
+
+---
+
+### 4. Logical Operators
+Used to perform logical operations and determine equality or difference between values.
+
+```js
+true && false   // false — AND: both must be true
+true || false   // true  — OR: at least one must be true
+!true           // false — NOT: negates the value
+```
+
+| Operator | Name | Returns `true` when |
+|---|---|---|
+| `&&` | AND | Both operands are true |
+| `\|\|` | OR | At least one is true |
+| `!` | NOT | Operand is false |
+
+---
+
+### 5. Bitwise Operators
+Perform operations on binary representations of numbers.
+
+```js
+5 & 1    // AND → 1    (0101 & 0001 = 0001)
+5 | 1    // OR  → 5    (0101 | 0001 = 0101)
+5 ^ 1    // XOR → 4    (0101 ^ 0001 = 0100)
+~5       // NOT → -6   (inverts all bits)
+```
+
+> Rarely used in everyday JS, but important for low-level operations.
+
+---
+
+### 6. Ternary Operator
+A shorthand for conditional statements that takes three operands.
+
+```js
+// Syntax: condition ? valueIfTrue : valueIfFalse
+
+const age = 18;
+const status = age >= 18 ? "Adult" : "Minor";
+console.log(status);  // "Adult"
+```
+
+---
+
+### 7. Comma Operator
+Evaluates operands from left to right sequentially and returns the value of the rightmost operand.
+
+```js
+const res = (1 + 2, 3 + 4, 5 + 6);
+console.log(res);  // 11 — only last value returned
+```
+
+---
+
+### 8. Unary Operators
+Operate on a single operand.
+
+```js
+let x = 5;
+
+++x        // Pre-increment  → x is 6, returns 6
+x++        // Post-increment → returns 6, then x becomes 7
+--x        // Pre-decrement  → x is 6, returns 6
+x--        // Post-decrement → returns 6, then x becomes 5
+
+typeof x   // "number" — returns the type of a variable
+```
+
+**Pre vs Post — key difference:**
+```js
+let a = 5;
+console.log(++a);  // 6 — increments FIRST, then returns
+console.log(a++);  // 6 — returns FIRST, then increments
+console.log(a);    // 7
+```
+
+---
+
+### 9. Relational Operators
+Compare operands and determine the relationship between them, returning a boolean.
+
+```js
+"length" in { length: 10 }   // true  — checks if property exists in object
+[] instanceof Array            // true  — checks if object is instance of constructor
+```
+
+---
+
+### 10. String Operators
+`+` concatenates strings, and `+=` appends to an existing string.
+
+```js
+"Hello" + " " + "World"   // "Hello World"
+
+let s = "Hello";
+s += " World";             // "Hello World"
+
+"5" + 3                    // "53" — number gets coerced to string!
+```
+
+---
+
+### 11. Optional Chaining `?.`
+Allows safe access to deeply nested properties without throwing errors if the property doesn't exist. Returns `undefined` if the property is absent.
+
+```js
+const user = { name: "Ajay", address: { city: "Delhi" } };
+
+console.log(user.address?.city);    // "Delhi"
+console.log(user.contact?.phone);   // undefined (no error!)
+console.log(user.contact.phone);    // ❌ TypeError — without ?.
+```
+
+---
+
+### 12. BigInt Operators
+Allow calculations with numbers beyond the safe integer range. Use the `n` suffix to denote BigInt literals.
+
+```js
+const a = 123456789012345678901234567890n;
+const b = 987654321098765432109876543210n;
+console.log(a + b);  // works perfectly
+```
+
+---
+
+### Quick Summary Table
+
+| Category | Operators |
+|---|---|
+| Arithmetic | `+ - * / % **` |
+| Assignment | `= += -= *= /= %=` |
+| Comparison | `== === != !== > < >= <=` |
+| Logical | `&& \|\| !` |
+| Bitwise | `& \| ^ ~` |
+| Ternary | `? :` |
+| Unary | `++ -- typeof` |
+| Relational | `in instanceof` |
+| String | `+ +=` |
+| Optional Chain | `?.` |
+
+
+
+Here are the notes:
+
+---
+
+## Type Conversion & Type Coercion in JavaScript
+
+JavaScript data types are flexible — the type of variables can change when the program runs. Type Conversion and Type Coercion are the two ways to change a variable's data type from one type to another.
+
+---
+
+### Type Conversion (Explicit)
+
+Type Conversion is when the data type is converted manually by the programmer. It is also known as explicit type casting. It uses built-in JavaScript methods like `Number()`, `String()`, and `Boolean()`, giving full control over data types.
+
+#### String → Number
+Use `Number()`, `parseInt()`, or `parseFloat()`.
+
+```js
+Number("123")        // 123
+Number("3.14")       // 3.14
+Number("")           // 0
+Number("abc")        // NaN
+parseInt("42px")     // 42   — stops at first non-numeric char
+parseFloat("3.14m")  // 3.14
+```
+
+#### Number → String
+Use `String()` or concatenate with an empty string.
+
+```js
+String(123)    // "123"
+(123).toString()  // "123"
+123 + ""       // "123"
+```
+
+#### Boolean → Number
+`true` becomes `1` and `false` becomes `0`.
+
+```js
+Number(true)   // 1
+Number(false)  // 0
+```
+
+#### Boolean → String
+Use `String()` or concatenate with an empty string.
+
+```js
+String(true)   // "true"
+String(false)  // "false"
+true + ""      // "true"
+```
+
+#### Other conversions to know
+```js
+Number(null)       // 0
+Number(undefined)  // NaN
+Number(true)       // 1
+Number(false)      // 0
+Boolean(0)         // false
+Boolean("")        // false
+Boolean(null)      // false
+Boolean(undefined) // false
+Boolean(NaN)       // false
+Boolean("hello")   // true
+Boolean(1)         // true
+```
+
+---
+
+### Type Coercion (Implicit)
+
+Type Coercion is the automatic conversion of one data type to another by JavaScript during operations. It is also known as implicit type casting. It happens mostly in comparison and arithmetic operations and can lead to unexpected results if not handled properly.
+
+#### 1. String + Number → String
+If a string is present in an arithmetic operation, JavaScript automatically converts the number to a string.
+
+```js
+5 + "5"      // "55"  ← number coerced to string
+"5" + 3      // "53"
+"5" - 3      // 2    ← string coerced to number (- doesn't concat)
+"5" * 2      // 10
+"10" / 2     // 5
+```
+
+> ⚠️ `+` with a string = concatenation. `-`, `*`, `/` always convert to number.
+
+#### 2. Boolean + Number → Number
+When performing arithmetic operations, JS converts `true` to `1` and `false` to `0`.
+
+```js
+true + 10    // 11
+false + 10   // 10
+true + true  // 2
+```
+
+#### 3. Comparison of Different Types
+JavaScript converts the two values into a common type when comparing with `==`.
+
+```js
+"10" == 10     // true  — string coerced to number
+0 == false     // true  — false coerced to 0
+"" == false    // true  — both coerce to 0
+null == undefined  // true  — special case
+null == 0      // false — null only loosely equals undefined
+```
+
+#### 4. Boolean Context (Truthy / Falsy)
+JavaScript converts non-boolean values to boolean when used in an `if` statement.
+
+```js
+// Falsy values — coerce to false
+if ("")        // false
+if (0)         // false
+if (null)      // false
+if (undefined) // false
+if (NaN)       // false
+if (false)     // false
+
+// Truthy values — coerce to true
+if ("hello")   // true
+if (1)         // true
+if ([])        // true  ← empty array is truthy!
+if ({})        // true  ← empty object is truthy!
+```
+
+---
+
+### Key Differences
+
+| Feature | Type Conversion | Type Coercion |
+|---|---|---|
+| Performed by | Programmer | JavaScript Engine |
+| Type | Explicit | Implicit |
+| Control | Full control | Automatic |
+| Example | `Number("5")` → `5` | `"5" - 2` → `3` |
+
+---
+
+### Tricky Coercion Examples
+
+```js
+[] + []        // ""    — both arrays convert to empty string
+[] + {}        // "[object Object]"
+{} + []        // 0     — {} treated as empty block, +[] = 0
+"5" - - "3"   // 8     — both coerced to numbers
+null + 1       // 1     — null becomes 0
+undefined + 1  // NaN   — undefined becomes NaN
+```
+
+---
+
+### Best Practices
+
+Always use explicit type conversion where possible to avoid unexpected results. Use `===` instead of `==` to prevent unintended type coercion in comparisons. Convert inputs explicitly before performing operations. Use `typeof` to check data types before processing values.
+
+```js
+// Bad — relies on coercion
+if (userInput) { ... }
+
+// Good — explicit check
+if (userInput !== "" && userInput !== null) { ... }
+
+// Bad
+"5" == 5   // true (coercion happens)
+
+// Good
+"5" === 5  // false (strict, no coercion)
+```
+
+
+
+Here are the notes:
+
+---
+
+## JavaScript Control Flow Statements
+
+Control flow statements control the order in which code is executed. They allow you to make decisions, repeat tasks, and jump between parts of a program based on specific conditions.
+
+---
+
+### 1. `if` Statement
+Executes a block of code only if a specified condition is true.
+
+```js
+const age = 18;
+if (age >= 18) {
+    console.log("You are an adult.");
+}
+```
+
+---
+
+### 2. `if...else` Statement
+Provides an alternate block of code to execute if the condition is false.
+
+```js
+const score = 40;
+if (score >= 50) {
+    console.log("You passed.");
+} else {
+    console.log("You failed.");
+}
+```
+
+---
+
+### 3. `if...else if...else` Statement
+Used when you want to handle multiple conditions.
+
+```js
+const temp = 25;
+if (temp > 30) {
+    console.log("It's hot.");
+} else if (temp >= 20) {
+    console.log("It's warm.");
+} else {
+    console.log("It's cold.");
+}
+```
+
+---
+
+### 4. `switch` Statement
+Evaluates an expression and executes a block of code based on matching cases. Provides an alternative to long if-else chains.
+
+```js
+const day = "Monday";
+switch (day) {
+    case "Monday":
+        console.log("Start of the week.");
+        break;           // ← always use break to stop fall-through
+    case "Friday":
+        console.log("End of the workweek.");
+        break;
+    default:             // ← runs if no case matches
+        console.log("It's a regular day.");
+}
+```
+
+> ⚠️ Without `break`, execution falls through to the next case!
+
+**Fall-through (intentional use):**
+```js
+switch (day) {
+    case "Saturday":
+    case "Sunday":
+        console.log("It's the weekend!");  // runs for both cases
+        break;
+}
+```
+
+---
+
+### 5. Ternary Operator
+Used to assign a value to a variable based on a condition. If the condition is true it returns the first value, otherwise the second.
+
+```js
+// Syntax: condition ? valueIfTrue : valueIfFalse
+
+let a = 10;
+console.log(a === 5 ? "a is 5" : "a is not 5");  // "a is not 5"
+
+// Chained ternary (use sparingly)
+let grade = score >= 90 ? "A" : score >= 70 ? "B" : "C";
+```
+
+---
+
+### 6. Loops
+
+#### `while` loop — checks condition BEFORE each iteration
+```js
+let i = 0;
+while (i < 5) {
+    console.log(i);
+    i++;
+}
+// Runs only if condition is true from the start
+```
+
+#### `do...while` loop — checks condition AFTER each iteration
+```js
+let i = 0;
+do {
+    console.log(i);
+    i++;
+} while (i < 5);
+// Always runs at least ONCE even if condition is false
+```
+
+---
+
+### 7. All Types of `for` Loops
+
+#### `for` — classic, index-based
+```js
+for (let i = 0; i < 5; i++) {
+    console.log(i);   // 0 1 2 3 4
+}
+
+// Reverse loop
+for (let i = 5; i >= 0; i--) {
+    console.log(i);   // 5 4 3 2 1 0
+}
+```
+
+#### `for...of` — iterates over VALUES of an iterable (array, string, set, map)
+```js
+const fruits = ["apple", "banana", "mango"];
+for (let fruit of fruits) {
+    console.log(fruit);   // apple, banana, mango
+}
+
+// Works on strings too
+for (let char of "hello") {
+    console.log(char);    // h e l l o
+}
+```
+
+#### `for...in` — iterates over KEYS/PROPERTIES of an object
+```js
+const user = { name: "Ajay", age: 25, city: "Delhi" };
+for (let key in user) {
+    console.log(key, ":", user[key]);
+    // name : Ajay
+    // age  : 25
+    // city : Delhi
+}
+
+// Also works on arrays (gives index as key — avoid this)
+const arr = ["a", "b", "c"];
+for (let index in arr) {
+    console.log(index);   // "0" "1" "2" (string indices!)
+}
+```
+
+#### `Array.forEach()` — runs a function for each element
+```js
+const nums = [1, 2, 3, 4];
+nums.forEach((num, index) => {
+    console.log(index, num);
+});
+// Cannot use break or continue inside forEach
+```
+
+#### `Array.map()` — loops and returns a NEW array
+```js
+const nums = [1, 2, 3];
+const doubled = nums.map(n => n * 2);
+console.log(doubled);  // [2, 4, 6]
+```
+
+#### `for...of` with `entries()` — get both index and value
+```js
+const fruits = ["apple", "banana", "mango"];
+for (let [index, fruit] of fruits.entries()) {
+    console.log(index, fruit);
+    // 0 apple
+    // 1 banana
+    // 2 mango
+}
+```
+
+---
+
+### 8. Loop Control Statements
+
+```js
+// break — exits the loop entirely
+for (let i = 0; i < 10; i++) {
+    if (i === 5) break;
+    console.log(i);   // 0 1 2 3 4
+}
+
+// continue — skips current iteration, continues loop
+for (let i = 0; i < 5; i++) {
+    if (i === 2) continue;
+    console.log(i);   // 0 1 3 4
+}
+```
+
+---
+
+### Quick Comparison — Which Loop to Use?
+
+| Loop | Best Used For |
+|---|---|
+| `for` | When you know the number of iterations |
+| `while` | When condition is checked before each run |
+| `do...while` | When you need at least one execution |
+| `for...of` | Iterating values of arrays, strings, sets |
+| `for...in` | Iterating keys/properties of objects |
+| `forEach` | Running a function on each array element |
+| `map` | Transforming an array into a new array |
+
+---
+
+### Uses of Control Flow
+Control flow statements are the backbone of programming for decision-making (if/else), branching (break/continue), looping (for/while/do...while), and switching (switch statement).
+
+
+
+Here are your notes on JavaScript Functions from the GeeksforGeeks article! They cover:
+
+**Core concepts** — the difference between parameters and arguments, how default parameters work, and what the `return` statement does.
+
+**14 types of functions**, from the basics (named, anonymous, function expressions) through ES6 arrow functions, up to more advanced patterns like generators, async functions, higher-order functions, and pure functions — each with a code example.
+
+Let me know if you'd like to go deeper on any specific type!
+
+
+Yes, you absolutely can pass two (or more) arguments to an arrow function! The only special case is when there's **exactly one** parameter — then you can omit the parentheses. Here's the rule:
+
+```js
+// Zero parameters — parentheses required
+const greet = () => "Hello!";
+
+// One parameter — parentheses optional
+const square = n => n * n;
+
+// Two or more parameters — parentheses required
+const add = (a, b) => a + b;
+console.log(add(3, 5)); // 8
+
+// Three parameters
+const multiply = (a, b, c) => a * b * c;
+console.log(multiply(2, 3, 4)); // 24
+```
+
+So the `const square = n => n * n` example in your notes only skips the parentheses because it has a single parameter. With two arguments, you just wrap them in `()` like a normal function.
+
+Yes! You can use `if` blocks in arrow functions — you just need to add curly braces `{}` and a `return` statement. Here's the difference:
+
+```js
+// Without if — short one-liner (implicit return, no curly braces needed)
+const double = n => n * 2;
+
+// With if block — curly braces + explicit return required
+const checkAge = (age) => {
+  if (age >= 18) {
+    return "Adult";
+  } else {
+    return "Minor";
+  }
+};
+
+console.log(checkAge(20)); // "Adult"
+console.log(checkAge(15)); // "Minor"
+```
+
+The key rules:
+- Once you add `{}`, you **must** write `return` explicitly — it won't return automatically anymore.
+- Without `{}`, only a single expression is allowed (no `if` blocks).
+
+You can also use a **ternary operator** as a cleaner one-liner alternative to `if/else`:
+
+```js
+const checkAge = (age) => age >= 18 ? "Adult" : "Minor";
+```
+
+Same result, much shorter!
